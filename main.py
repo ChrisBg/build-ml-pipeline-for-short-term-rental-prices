@@ -94,6 +94,7 @@ def go(config: DictConfig):
                     },
             )
 
+
         if "train_random_forest" in active_steps:
             logger.info("Train random forest Step")
 
@@ -115,6 +116,19 @@ def go(config: DictConfig):
                     "output_artifact": "random_forest_export",
                 },
             )
+
+        if "hyperparameter_tuning" in active_steps:
+            logger.info("Hyperparameter tuning step")
+            _ = mlflow.run(
+                os.path.join(hydra.utils.get_original_cwd(), "components", "hyperparameter_tuning"),
+                "main",
+                parameters={
+                    "hydra_options": (
+                        "--multirun "
+                    )
+                },
+            )
+
 
         if "test_regression_model" in active_steps:
             logger.info("Test regression model Step")

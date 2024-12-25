@@ -598,3 +598,7 @@ Please, make sure all steps are using **the same** python version and that you h
 ## License
 
 [License](LICENSE.txt)
+
+## Useful Links
+
+- [my W&B project](https://wandb.ai/chrisbg30-adloox/nyc_airbnb?nw=nwuserchrisbg30)
