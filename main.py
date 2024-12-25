@@ -17,13 +17,8 @@ _steps = [
     "basic_cleaning",
     "data_check",
     "data_split",
-    "train_random_forest",
-    # NOTE: We do not include this in the steps so it is not run by mistake.
-    # You first need to promote a model export to "prod" before you can run this,
-    # then you need to run this step explicitly
-#    "test_regression_model"
+    "train_random_forest"
 ]
-
 
 # This automatically reads in the configuration
 @hydra.main(version_base="1.3.2", config_path=".", config_name='config.yaml')
@@ -40,14 +35,13 @@ def go(config: DictConfig):
     # Move to a temporary directory
     with tempfile.TemporaryDirectory() as tmp_dir:
 
+        logger.info("Downloading data from %s", config['etl']['sample'])
         if "download" in active_steps:
-            logger.info(f"##### Downloading data from {config['etl']['sample']}#####")
             # Download file and load in W&B
             _ = mlflow.run(
                 f"{config['main']['components_repository']}/get_data",
                 "main",
                 version='main',
-                #env_manager="conda",
                 parameters={
                     "sample": config["etl"]["sample"],
                     "artifact_name": "sample.csv",
@@ -57,7 +51,7 @@ def go(config: DictConfig):
             )
 
         if "basic_cleaning" in active_steps:
-            logger.info(f"##### Basic cleaning Step #####")
+            logger.info("Basic cleaning Step")
             _ = mlflow.run(
                 os.path.join(hydra.utils.get_original_cwd(), "src", "basic_cleaning"),
                 "main",
@@ -73,7 +67,7 @@ def go(config: DictConfig):
             
 
         if "data_check" in active_steps:
-            logger.info(f"##### Data check Step #####")
+            logger.info("Data check Step")
             _ = mlflow.run(
                 os.path.join(hydra.utils.get_original_cwd(), "src", "data_check"),
                 "main",
@@ -87,7 +81,7 @@ def go(config: DictConfig):
             )
 
         if "data_split" in active_steps:
-            logger.info(f"##### Data split Step #####")
+            logger.info("Data split Step")
             _ = mlflow.run( 
                 f"{config['main']['components_repository']}/train_val_test_split",
                 "main",
@@ -101,7 +95,7 @@ def go(config: DictConfig):
             )
 
         if "train_random_forest" in active_steps:
-            logger.info(f"##### Train random forest Step #####")
+            logger.info("Train random forest Step")
 
             # NOTE: we need to serialize the random forest configuration into JSON
             rf_config = os.path.abspath("rf_config.json")
@@ -123,7 +117,7 @@ def go(config: DictConfig):
             )
 
         if "test_regression_model" in active_steps:
-            logger.info(f"##### Test regression model Step #####")
+            logger.info("Test regression model Step")
             _ = mlflow.run(
                 f"{config['main']['components_repository']}/test_regression_model",
                 "main",
@@ -133,8 +127,6 @@ def go(config: DictConfig):
                     "test_dataset": "test_data.csv:latest"
                 },
             )
-
-
 
 
 if __name__ == "__main__":

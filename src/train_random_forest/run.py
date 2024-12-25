@@ -75,13 +75,7 @@ def go(args):
     )
 
     logger.info("Preparing sklearn pipeline")
-
     sk_pipe, processed_features = get_inference_pipeline(rf_config, args.max_tfidf_features)
-    #X_val_processed = X_val[processed_features].copy()
-    
-    # Convert any remaining object columns to string
-    #   for col in X_val_processed.select_dtypes(['object']).columns:
-    #       X_val_processed[col] = X_val_processed[col].astype(str)
 
     # Then fit it to the X_train, y_train data
     logger.info("Fitting")
