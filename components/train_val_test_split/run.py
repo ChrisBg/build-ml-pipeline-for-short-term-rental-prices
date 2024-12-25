@@ -4,9 +4,9 @@ This script splits the provided dataframe in test and remainder
 """
 import argparse
 import logging
+import tempfile
 import pandas as pd
 import wandb
-import tempfile
 from sklearn.model_selection import train_test_split
 from wandb_utils.log_artifact import log_artifact
 
@@ -37,7 +37,7 @@ def go(args):
     # Save to output files
     for df, k in zip([trainval, test], ['trainval', 'test']):
         logger.info(f"Uploading {k}_data.csv dataset")
-        with tempfile.NamedTemporaryFile("w") as fp:
+        with tempfile.NamedTemporaryFile("w", delete=False) as fp:
 
             df.to_csv(fp.name, index=False)
 
@@ -46,7 +46,7 @@ def go(args):
                 f"{k}_data",
                 f"{k} split of dataset",
                 fp.name,
-                run,
+                run
             )
 
 
