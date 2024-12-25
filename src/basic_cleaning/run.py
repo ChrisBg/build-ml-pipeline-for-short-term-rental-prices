@@ -34,13 +34,14 @@ def go(args):
     idx = df['price'].between(min_price, max_price)
     df = df[idx].copy()
     
-    # Convert last_review to datetime, only if the column exists
-    if 'last_review' in df.columns:
-        df['last_review'] = pd.to_datetime(df['last_review'])
+    # Convert last_review to datetime
+    df['last_review'] = pd.to_datetime(df['last_review'])
+
 
     # Save the cleaned data
     logger.info("Saving cleaned data")
-    df.to_csv("clean_sample.csv", index=False)
+    file_name = args.output_artifact
+    df.to_csv(file_name, index=False)
 
     logger.info("Saving cleaned data to wandb")
     artifact = wandb.Artifact(
