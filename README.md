@@ -603,3 +603,4 @@ Please, make sure all steps are using **the same** python version and that you h
 
 - [my W&B project](https://wandb.ai/chrisbg-team/nyc_airbnb?nw=nwuserchrisbg)
 - [Github](https://github.com/ChrisBg/build-ml-pipeline-for-short-term-rental-prices.git)
+  
